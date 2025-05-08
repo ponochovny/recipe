@@ -1,46 +1,33 @@
-'use client'
-
-import { useRouter } from 'next/router'
-
 import { createClient } from 'contentful'
-import { useCallback, useEffect, useState } from 'react'
 import { IRecipe } from '@/entities/recipe/types'
 import { RecipeDetails } from '@/entities/recipe'
 
-const RecipePage = () => {
-	const [recipe, setRecipe] = useState<null | IRecipe>(null)
-	const router = useRouter()
-
+export const getServerSideProps = async ({
+	params,
+}: {
+	params: { slug: string }
+}) => {
+	console.log('SLUG IS:', params.slug)
 	const client = createClient({
 		space: process.env.CONTENTFUL_SPACE_ID || '',
 		accessToken: process.env.CONTENTFUL_ACCESS_TOKEN || '',
 	})
 
-	console.log(client)
+	const { items } = await client.getEntries({
+		content_type: 'recipe',
+	})
+	const recipe = items.find((item) => item.fields.slug === params.slug)
 
-	const fetchItems = useCallback(
-		async function () {
-			const { items } = await client.getEntries({
-				content_type: 'recipe',
-			})
-
-			const recipe = items.find(
-				(item) => item.fields.slug === router.query.slug
-			)
-
-			setRecipe(recipe as unknown as IRecipe)
-		},
-		[client, router.query.slug]
-	)
-
-	useEffect(() => {
-		if (router.query.slug) {
-			fetchItems()
+	if (!recipe) {
+		return {
+			notFound: true,
 		}
-	}, [router.query.slug])
+	}
 
-	if (!recipe) return null
+	return { props: { recipe } }
+}
 
+const RecipePage = ({ recipe }: { recipe: IRecipe }) => {
 	return (
 		<div>
 			<RecipeDetails recipe={recipe} />
