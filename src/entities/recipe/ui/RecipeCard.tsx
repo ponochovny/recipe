@@ -17,19 +17,19 @@ const RecipeCard = ({ recipe }: { recipe: IRecipe }) => {
 					// height={thumbnail.fields.file.details.image.height}
 				/>
 			</div>
-			<div>
-				<div className='mb-2'>
-					<h4 className='font-bold p-2 bg-white inline-block -top-4 relative -rotate-1 shadow-md -left-1'>
-						{title}
-					</h4>
-					<p className='text-md'>Takes approx {cookingTime} mins to make</p>
+			<div className='bg-white relative -left-1 -top-2 shadow-md'>
+				<div className='mb-2 p-2'>
+					<h4 className='font-bold text-xl'>{title}</h4>
+					<p className='text-md text-gray-500'>
+						Takes approx {cookingTime} mins to make
+					</p>
 				</div>
-				<div>
+				<div className='text-right'>
 					<Link
 						href={`/recipes/${slug}`}
-						className='p-2 bg-yellow-100 font-bold text-sm hover:bg-yellow-100/80'
+						className='inline-block py-3 px-5 bg-rose-600 text-white hover:bg-rose-500/80'
 					>
-						View
+						Cook this
 					</Link>
 				</div>
 			</div>
